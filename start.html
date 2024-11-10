@@ -23,39 +23,80 @@
     </dialog>
     <main class="off">
         <section>
-            <h2>식상한 노래들 월드컵 <span class="group-stage-value">0</span>강 <span class="now-group-stage">0/<span class="group-stage-value">0</span></span></h2>
+            <h2>식상한 노래들 월드컵 <span class="group-stage-value">0</span>강 <span class="now-group-stage">0/<span class="group-stage-value-divide">0</span></span></h2>
             <div class="select-container">
                 <img src="./images/image1.jfif" alt="">
                 <img src="./images/image2.jpg" alt="">
+                <img src="./images/vs.webp" alt="">
             </div>
         </section>
     </main>
 
     <script>
+        // 현재 URL의 쿼리 파라미터 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 'name' 파라미터 값 가져오기
+        const name = urlParams.get('name');
+
+        // 저장된 JSON 문자열을 파싱하여 객체로 변환한 후 사용
+        let data = JSON.parse(sessionStorage.getItem("test"));
+
+        
+        // sessionStorage
+        if(!data){
+            data = {
+                "name": name,
+                "status": false,
+                "group-stage": "",
+                "now-stage": "",
+                "img": [`${name}.jpg01`, `${name}.jpg02`]
+            };
+        }
+
+        sessionStorage.setItem("test", JSON.stringify(data));
+
+        console.log(data);
+
+
         // DOMContentLoaded 이벤트 리스너 추가
         document.addEventListener("DOMContentLoaded", function() {
             const dialog = document.getElementById("myDialog");
-            dialog.showModal(); // 모달 대화상자 열기
+            if(data.status === false){
+                dialog.showModal(); // 모달 대화상자 열기
+            }
         });
 
         // 닫기 버튼 클릭 시 모달 닫기
         document.getElementById("closeDialog").addEventListener("click", function() {
             const dialog = document.getElementById("myDialog");
             document.querySelector(".group-stage-value").textContent = document.getElementById("group-stage").value;
+            document.querySelector(".group-stage-value-divide").textContent = document.getElementById("group-stage").value/2;
             document.querySelector("body").classList.add("black");
             document.querySelector("main").classList.add("on");
+            data.status = true;
+            sessionStorage.setItem("test", JSON.stringify(data));
             dialog.close(); // 모달 대화상자 닫기
         });
 
         document.querySelector(".select-container img:nth-of-type(1)").addEventListener("click", function() {
+            document.querySelector(".select-container img:nth-of-type(3)").style.display = "none";
             this.style.right = "25%";
             document.querySelector(".select-container img:nth-of-type(2)").style.left = "100%";
+            setTimeout(function() {
+               location.reload();
+            }, 2000);
         });
         
         document.querySelector(".select-container img:nth-of-type(2)").addEventListener("click", function() {
+            document.querySelector(".select-container img:nth-of-type(3)").style.display = "none";
             this.style.left = "25%";
             document.querySelector(".select-container img:nth-of-type(1)").style.right = "100%";
+            setTimeout(function() {
+               location.reload();
+            }, 2000);
         });
+
     </script>
 </body>
 </html>
